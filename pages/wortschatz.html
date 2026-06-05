@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wortschatz – Beispiele mit Darija</title>
+  <style>
+    :root {
+      --bg: #f3efe6;
+      --paper: #fffdf7;
+      --ink: #1e1e1e;
+      --blue: #0b3b77;
+      --green: #1f8a3d;
+      --orange: #f39c12;
+      --line: #d9e6cf;
+      --button: #0d6efd;
+      --button-hover: #0b5ed7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+      background: linear-gradient(180deg, #f8f4ec 0%, #ede7da 100%);
+      color: var(--ink);
+      padding: 24px;
+    }
+    .container {
+      max-width: 1120px;
+      margin: auto;
+      background: var(--paper);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.12);
+      border: 4px solid #ffffff;
+    }
+    .header {
+      text-align: center;
+      padding: 16px 12px 28px;
+      border-bottom: 3px dashed var(--line);
+      margin-bottom: 24px;
+    }
+    .top-icons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 56px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 0;
+      color: var(--blue);
+      font-size: clamp(38px, 8vw, 82px);
+      line-height: 1;
+    }
+    h2 {
+      margin: 10px 0 6px;
+      color: var(--green);
+      font-size: clamp(28px, 6vw, 58px);
+      line-height: 1.08;
+    }
+    .subtitle {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #555;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .card {
+      border: 2px dashed #cfe2cf;
+      border-radius: 20px;
+      padding: 16px 18px;
+      background: #fffefb;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1 1 520px;
+    }
+    .number {
+      font-size: 30px;
+      font-weight: 900;
+      width: 44px;
+    }
+    .emoji {
+      font-size: 42px;
+      width: 48px;
+      text-align: center;
+    }
+    .title-wrap { min-width: 0; }
+    .word {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900;
+      line-height: 1.05;
+      word-break: break-word;
+    }
+    .translation {
+      margin-top: 4px;
+      font-size: 22px;
+      font-style: italic;
+      color: #444;
+    }
+    .toggle-btn {
+      border: none;
+      background: var(--button);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(13,110,253,.20);
+      transition: transform .12s ease, background .2s ease;
+    }
+    .toggle-btn:hover {
+      background: var(--button-hover);
+      transform: translateY(-1px);
+    }
+    .examples {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #f8fbff;
+      border-radius: 16px;
+      border-left: 6px solid var(--orange);
+    }
+    .examples.show { display: block; }
+    .examples h4 {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 22px;
+    }
+    .examples ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .examples li {
+      margin: 12px 0;
+      font-size: 19px;
+      line-height: 1.45;
+    }
+    .de {
+      font-weight: 800;
+      color: #222;
+    }
+    .darija {
+      margin-top: 4px;
+      color: #0f6b3a;
+      direction: rtl;
+      text-align: right;
+      font-family: "Arial", "Tahoma", sans-serif;
+      font-size: 20px;
+      background: #ecfff3;
+      padding: 7px 10px;
+      border-radius: 10px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+    @media (max-width: 700px) {
+      body { padding: 10px; }
+      .container { padding: 16px; border-radius: 18px; }
+      .top-icons { font-size: 40px; }
+      .subtitle { font-size: 18px; }
+      .number { width: 34px; font-size: 24px; }
+      .emoji { width: 40px; font-size: 34px; }
+      .translation { font-size: 18px; }
+      .toggle-btn { width: 100%; }
+      .card-top { align-items: stretch; }
+      .darija { font-size: 18px; }
+    }
+  </style>
+  <script>
+    function toggleExamples(id, btn) {
+      const el = document.getElementById(id);
+      const isOpen = el.classList.contains('show');
+      if (isOpen) {
+        el.classList.remove('show');
+        btn.textContent = 'Dir 5 Beispiele + Darija';
+      } else {
+        el.classList.add('show');
+        btn.textContent = 'Khbi Beispiele';
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="top-icons">
+        <span>☀️</span>
+        <span>🎈</span>
+      </div>
+      <h1>Wortschatz</h1>
+      <h2>Den Horizont erweitern</h2>
+      <div class="subtitle">(Vocabulary – Beispiele mit Darija)</div>
+      <div class="note">Klik 3la <strong>"Dir 5 Beispiele + Darija"</strong> باش يبانولك الأمثلة وترجمتهم بالدارجة.</div>
+    </header>
+
+    <section class="cards">
+      
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">1.</span>
+          <span class="emoji">🌅</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#1e66d0">der Horizont</div>
+            <div class="translation">(the horizon)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex1', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex1" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Am Meer sieht man einen wunderschönen Horizont.</div>
+          <div class="darija">➜ فالبحر كتقدر تشوف أفق زوين بزاف.</div>
+        </li><li>
+          <div class="de">Ich schaue gern in den Horizont, wenn ich nachdenke.</div>
+          <div class="darija">➜ كنبغي نشوف فالأفق ملي كنخمّم.</div>
+        </li><li>
+          <div class="de">Von diesem Berg aus ist der Horizont sehr klar.</div>
+          <div class="darija">➜ من هاد الجبل الأفق باين واضح.</div>
+        </li><li>
+          <div class="de">Der rote Himmel am Horizont sieht fantastisch aus.</div>
+          <div class="darija">➜ السما الحمرا فالأفق كاتبان رائعة.</div>
+        </li><li>
+          <div class="de">Wir liefen, bis der Horizont dunkel wurde.</div>
+          <div class="darija">➜ بقينا كنمشيو حتى ولى الأفق مظلم.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">2.</span>
+          <span class="emoji">💭</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#f28c18">die Erwartung</div>
+            <div class="translation">(expectation)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex2', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex2" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Meine Erwartungen an den Kurs waren hoch.</div>
+          <div class="darija">➜ كنت متوقع بزاف من هاد الكورس.</div>
+        </li><li>
+          <div class="de">Die Reise war besser als meine Erwartungen.</div>
+          <div class="darija">➜ الرحلة كانت حسن من اللي توقعت.</div>
+        </li><li>
+          <div class="de">Er hat große Erwartungen an sich selbst.</div>
+          <div class="darija">➜ هو عندو توقعات كبار من راسو.</div>
+        </li><li>
+          <div class="de">Oft sind unsere Erwartungen zu hoch.</div>
+          <div class="darija">➜ بزاف ديال المرات توقعاتنا كتكون طالعة بزاف.</div>
+        </li><li>
+          <div class="de">Die Ergebnisse entsprechen nicht meinen Erwartungen.</div>
+          <div class="darija">➜ النتائج ما جاوش كيفما كنت متوقع.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">3.</span>
+          <span class="emoji">⛰️</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#2f9e44">die Erfahrung</div>
+            <div class="translation">(experience)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex3', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex3" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Diese Reise war eine tolle Erfahrung.</div>
+          <div class="darija">➜ هاد الرحلة كانت تجربة زوينة.</div>
+        </li><li>
+          <div class="de">Ich habe viel Erfahrung im Unterrichten.</div>
+          <div class="darija">➜ عندي تجربة كبيرة فالتدريس.</div>
+        </li><li>
+          <div class="de">Aus Fehlern sammelt man wichtige Erfahrungen.</div>
+          <div class="darija">➜ من الأخطاء كنكتسبو تجارب مهمة.</div>
+        </li><li>
+          <div class="de">Sie hat gute Erfahrungen mit dem Deutschlernen gemacht.</div>
+          <div class="darija">➜ هي دازت تجارب زوينة مع تعلم الألمانية.</div>
+        </li><li>
+          <div class="de">Jede neue Erfahrung verändert uns ein bisschen.</div>
+          <div class="darija">➜ كل تجربة جديدة كتبدلنا شوية.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">4.</span>
+          <span class="emoji">🎒</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#7b5cc7">das Abenteuer</div>
+            <div class="translation">(adventure)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex4', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex4" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Die Wanderung durch den Wald war ein echtes Abenteuer.</div>
+          <div class="darija">➜ الخرجة وسط الغابة كانت مغامرة حقيقية.</div>
+        </li><li>
+          <div class="de">Kinder lieben spannende Abenteuer.</div>
+          <div class="darija">➜ الدراري كيبغيو المغامرات المشوقة.</div>
+        </li><li>
+          <div class="de">Unsere Reise nach Island war ein großes Abenteuer.</div>
+          <div class="darija">➜ رحلتنا لأيسلندا كانت مغامرة كبيرة.</div>
+        </li><li>
+          <div class="de">Er sucht immer ein neues Abenteuer.</div>
+          <div class="darija">➜ هو ديما كيقلب على مغامرة جديدة.</div>
+        </li><li>
+          <div class="de">Camping in den Bergen ist für mich ein Abenteuer.</div>
+          <div class="darija">➜ التخييم فالجبال بالنسبة ليا مغامرة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">5.</span>
+          <span class="emoji">🔭</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#0ea5a8">die Perspektive</div>
+            <div class="translation">(perspective)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex5', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex5" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ein Auslandsjahr kann die Perspektive verändern.</div>
+          <div class="darija">➜ عام فالخارج يقدر يبدل النظرة ديالك للحياة.</div>
+        </li><li>
+          <div class="de">Versuche, die Situation aus einer anderen Perspektive zu sehen.</div>
+          <div class="darija">➜ حاول تشوف الوضع من زاوية أخرى.</div>
+        </li><li>
+          <div class="de">Seine Perspektive auf das Leben ist sehr positiv.</div>
+          <div class="darija">➜ النظرة ديالو للحياة إيجابية بزاف.</div>
+        </li><li>
+          <div class="de">Die Lehrerin erklärt das Thema aus neuer Perspektive.</div>
+          <div class="darija">➜ الأستاذة كتشرح الموضوع من منظور جديد.</div>
+        </li><li>
+          <div class="de">Reisen gibt uns oft eine neue Perspektive.</div>
+          <div class="darija">➜ السفر غالبا كيعطينا نظرة جديدة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">6.</span>
+          <span class="emoji">💬</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#e64980">die Sprache</div>
+            <div class="translation">(language)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex6', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex6" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Deutsch ist eine interessante Sprache.</div>
+          <div class="darija">➜ الألمانية لغة مثيرة للاهتمام.</div>
+        </li><li>
+          <div class="de">Die Sprache verbindet Menschen aus verschiedenen Ländern.</div>
+          <div class="darija">➜ اللغة كتجمع الناس من بلدان مختلفة.</div>
+        </li><li>
+          <div class="de">Ich lerne die Sprache jeden Tag ein bisschen mehr.</div>
+          <div class="darija">➜ كنتعلم هاد اللغة كل نهار شوية بشوية.</div>
+        </li><li>
+          <div class="de">Ohne Sprache ist Kommunikation schwierig.</div>
+          <div class="darija">➜ بلا لغة التواصل كيكون صعيب.</div>
+        </li><li>
+          <div class="de">Sie spricht die Sprache sehr fließend.</div>
+          <div class="darija">➜ هي كتهضر هاد اللغة بطلاقة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">7.</span>
+          <span class="emoji">🗣️</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#1e66d0">der Dialekt</div>
+            <div class="translation">(dialect)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex7', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex7" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">In Bayern gibt es einen starken Dialekt.</div>
+          <div class="darija">➜ فبايرن كاين واحد اللهجة قوية.</div>
+        </li><li>
+          <div class="de">Ich verstehe den Dialekt nicht immer sofort.</div>
+          <div class="darija">➜ ماشي ديما كنصدق نفهم اللهجة دغيا.</div>
+        </li><li>
+          <div class="de">Sein Dialekt klingt sehr sympathisch.</div>
+          <div class="darija">➜ اللهجة ديالو كتسمع زوينة ومحبوبة.</div>
+        </li><li>
+          <div class="de">Viele Leute sprechen im Alltag Dialekt.</div>
+          <div class="darija">➜ بزاف ديال الناس كيهضرو باللهجة فالحياة اليومية.</div>
+        </li><li>
+          <div class="de">Der Dialekt gehört zur regionalen Kultur.</div>
+          <div class="darija">➜ اللهجة جزء من الثقافة ديال المنطقة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">8.</span>
+          <span class="emoji">🏠</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#66a80f">das Heimweh</div>
+            <div class="translation">(homesickness)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex8', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex8" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Am Anfang hatte ich starkes Heimweh.</div>
+          <div class="darija">➜ فاللول كان عندي حنين قوي للدار.</div>
+        </li><li>
+          <div class="de">Nach zwei Wochen im Ausland bekam sie Heimweh.</div>
+          <div class="darija">➜ من بعد جوج سيمانات فالخارج جاها الحنين للدار.</div>
+        </li><li>
+          <div class="de">Musik aus meiner Heimat hilft gegen Heimweh.</div>
+          <div class="darija">➜ الموسيقى ديال بلادي كتعاونني ضد الحنين للدار.</div>
+        </li><li>
+          <div class="de">Viele Studierende haben am Anfang Heimweh.</div>
+          <div class="darija">➜ بزاف ديال الطلبة كيحسو بالحنين للدار فاللول.</div>
+        </li><li>
+          <div class="de">Mit neuen Freunden verschwindet das Heimweh oft schneller.</div>
+          <div class="darija">➜ مع صحاب جداد الحنين للدار كيمشي بسرعة أكثر.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">9.</span>
+          <span class="emoji">⏰</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#f08c00">die Pünktlichkeit</div>
+            <div class="translation">(punctuality)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex9', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex9" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">In Deutschland ist Pünktlichkeit sehr wichtig.</div>
+          <div class="darija">➜ فألمانيا احترام الوقت مهم بزاف.</div>
+        </li><li>
+          <div class="de">Seine Pünktlichkeit gefällt dem Chef.</div>
+          <div class="darija">➜ المدير عجباتو الدقة ديالو فالوقت.</div>
+        </li><li>
+          <div class="de">Pünktlichkeit zeigt Respekt.</div>
+          <div class="darija">➜ احترام الوقت كيبين الاحترام.</div>
+        </li><li>
+          <div class="de">Wegen ihrer Pünktlichkeit kommt sie nie zu spät.</div>
+          <div class="darija">➜ حيت هي كتجي فالوقت، ما كتأخرش أبدا.</div>
+        </li><li>
+          <div class="de">Im Beruf spielt Pünktlichkeit oft eine große Rolle.</div>
+          <div class="darija">➜ فالخدمة، احترام الوقت عندو دور كبير.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">10.</span>
+          <span class="emoji">👋</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#ff6b6b">die Begrüßung</div>
+            <div class="translation">(greeting)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex10', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex10" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Die Begrüßung war freundlich und herzlich.</div>
+          <div class="darija">➜ التحية كانت ودية ودافئة.</div>
+        </li><li>
+          <div class="de">In jedem Land ist die Begrüßung anders.</div>
+          <div class="darija">➜ فكل بلد طريقة السلام كتكون مختلفة.</div>
+        </li><li>
+          <div class="de">Eine höfliche Begrüßung macht einen guten Eindruck.</div>
+          <div class="darija">➜ تحية مؤدبة كتخلي انطباع مزيان.</div>
+        </li><li>
+          <div class="de">Zur Begrüßung gibt man oft die Hand.</div>
+          <div class="darija">➜ فالتحية غالبا كيعطيو اليد.</div>
+        </li><li>
+          <div class="de">Die Begrüßung im Kurs war sehr nett.</div>
+          <div class="darija">➜ الترحيب فالكورس كان زوين بزاف.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">11.</span>
+          <span class="emoji">🚲</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#0ca9b0">die Freizeitaktivitäten</div>
+            <div class="translation">(free-time activities)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex11', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex11" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Meine Freizeitaktivitäten sind Lesen und Radfahren.</div>
+          <div class="darija">➜ الأنشطة ديالي فوقت الفراغ هي القراية وركوب البيكالة.</div>
+        </li><li>
+          <div class="de">Im Sommer gibt es viele Freizeitaktivitäten im Park.</div>
+          <div class="darija">➜ فالصيف كاينين بزاف ديال الأنشطة فالبارك.</div>
+        </li><li>
+          <div class="de">Sport gehört zu meinen liebsten Freizeitaktivitäten.</div>
+          <div class="darija">➜ الرياضة من أكثر الأنشطة اللي كنبغي فوقت الفراغ.</div>
+        </li><li>
+          <div class="de">Die Schule organisiert interessante Freizeitaktivitäten.</div>
+          <div class="darija">➜ المدرسة كتنظم أنشطة زوينة فوقت الفراغ.</div>
+        </li><li>
+          <div class="de">Freizeitaktivitäten helfen gegen Stress.</div>
+          <div class="darija">➜ أنشطة وقت الفراغ كتعاون ضد الستريس.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">12.</span>
+          <span class="emoji">🤝</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#845ec2">die Gastfreundschaft</div>
+            <div class="translation">(hospitality)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex12', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex12" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Die Gastfreundschaft der Familie war beeindruckend.</div>
+          <div class="darija">➜ كرم الضيافة ديال العائلة كان مؤثر بزاف.</div>
+        </li><li>
+          <div class="de">Wir danken für eure große Gastfreundschaft.</div>
+          <div class="darija">➜ كنشكروكم على كرم الضيافة الكبير ديالكم.</div>
+        </li><li>
+          <div class="de">In diesem Land ist Gastfreundschaft sehr wichtig.</div>
+          <div class="darija">➜ فهاد البلد كرم الضيافة مهم بزاف.</div>
+        </li><li>
+          <div class="de">Die Gastfreundschaft der Menschen hat mich überrascht.</div>
+          <div class="darija">➜ كرم الناس فاجأني.</div>
+        </li><li>
+          <div class="de">Durch ihre Gastfreundschaft fühlte ich mich sofort willkommen.</div>
+          <div class="darija">➜ بسبب كرم الضيافة ديالهم حسيت براسي مرحب بيا من اللول.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">13.</span>
+          <span class="emoji">🎓</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#1f6feb">die Uni</div>
+            <div class="translation">(university)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex13', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex13" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Meine Schwester studiert an der Uni in Rabat.</div>
+          <div class="darija">➜ ختي كتقرا فالجامعة فالرباط.</div>
+        </li><li>
+          <div class="de">Die Uni beginnt um acht Uhr morgens.</div>
+          <div class="darija">➜ الجامعة كتبدا مع الثمنية ديال الصباح.</div>
+        </li><li>
+          <div class="de">An der Uni habe ich viele neue Leute kennengelernt.</div>
+          <div class="darija">➜ فالجامعة تعرفت على بزاف ديال الناس جداد.</div>
+        </li><li>
+          <div class="de">Er fährt jeden Tag mit dem Bus zur Uni.</div>
+          <div class="darija">➜ هو كيمشي كل نهار بالطوبيس للجامعة.</div>
+        </li><li>
+          <div class="de">Das Leben an der Uni ist spannend.</div>
+          <div class="darija">➜ الحياة فالجامعة مشوقة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">14.</span>
+          <span class="emoji">💼</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#f76707">der Job</div>
+            <div class="translation">(job)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex14', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex14" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Sie hat einen neuen Job gefunden.</div>
+          <div class="darija">➜ هي لقات خدمة جديدة.</div>
+        </li><li>
+          <div class="de">Mein Job macht mir viel Spaß.</div>
+          <div class="darija">➜ الخدمة ديالي كتعجبني بزاف.</div>
+        </li><li>
+          <div class="de">Für diesen Job braucht man Geduld.</div>
+          <div class="darija">➜ هاد الخدمة خاصها الصبر.</div>
+        </li><li>
+          <div class="de">Er sucht seit Monaten einen passenden Job.</div>
+          <div class="darija">➜ هو كيقلب من شهور على خدمة مناسبة.</div>
+        </li><li>
+          <div class="de">Neben der Uni hat sie einen kleinen Job.</div>
+          <div class="darija">➜ مع الجامعة عندها خدمة صغيرة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">15.</span>
+          <span class="emoji">💡</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#37b24d">eigentlich</div>
+            <div class="translation">(actually)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex15', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex15" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Eigentlich wollte ich heute zu Hause bleiben.</div>
+          <div class="darija">➜ فالحقيقة كنت باغي نبقى فالدار اليوم.</div>
+        </li><li>
+          <div class="de">Was machst du eigentlich am Wochenende?</div>
+          <div class="darija">➜ شنو كتدير فالحقيقة فالويكاند؟</div>
+        </li><li>
+          <div class="de">Eigentlich ist Deutsch gar nicht so schwer.</div>
+          <div class="darija">➜ فالحقيقة الألمانية ماشي صعيبة بزاف.</div>
+        </li><li>
+          <div class="de">Ich komme eigentlich aus Marokko.</div>
+          <div class="darija">➜ أنا فالأصل جاي من المغرب.</div>
+        </li><li>
+          <div class="de">Eigentlich hatte ich etwas anderes geplant.</div>
+          <div class="darija">➜ فالحقيقة كنت مخطط لشي حاجة أخرى.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">16.</span>
+          <span class="emoji">🔀</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#8e5cf7">anders</div>
+            <div class="translation">(different)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex16', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex16" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">In jedem Land ist das Essen anders.</div>
+          <div class="darija">➜ فكل بلد الماكلة كتكون مختلفة.</div>
+        </li><li>
+          <div class="de">Heute fühle ich mich anders als gestern.</div>
+          <div class="darija">➜ اليوم حاس براسي مختلف على البارح.</div>
+        </li><li>
+          <div class="de">Er denkt anders als seine Freunde.</div>
+          <div class="darija">➜ هو كيفكر بطريقة مختلفة على صحابو.</div>
+        </li><li>
+          <div class="de">Alles war anders, als ich erwartet hatte.</div>
+          <div class="darija">➜ كلشي كان مختلف على اللي كنت متوقع.</div>
+        </li><li>
+          <div class="de">Manchmal ist anders sein etwas Gutes.</div>
+          <div class="darija">➜ مرات تكون مختلف حاجة مزيانة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">17.</span>
+          <span class="emoji">📈</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#15aabf">besser</div>
+            <div class="translation">(better)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex17', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex17" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Heute geht es mir besser.</div>
+          <div class="darija">➜ اليوم أنا حسن.</div>
+        </li><li>
+          <div class="de">Dein Deutsch wird immer besser.</div>
+          <div class="darija">➜ الألمانية ديالك كاتولي حسن وحسن.</div>
+        </li><li>
+          <div class="de">Der zweite Plan ist besser als der erste.</div>
+          <div class="darija">➜ الخطة الثانية حسن من الأولى.</div>
+        </li><li>
+          <div class="de">Mit Übung wird alles besser.</div>
+          <div class="darija">➜ مع التدريب كلشي كيولي حسن.</div>
+        </li><li>
+          <div class="de">Diese Lösung passt besser zu unserem Problem.</div>
+          <div class="darija">➜ هاد الحل مناسب أكثر للمشكل ديالنا.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    </section>
+
+    <div class="footer">
+      German examples + Moroccan Darija translations
+    </div>
+  </div>
+</body>
+</html>

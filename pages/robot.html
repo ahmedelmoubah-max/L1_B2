@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voice-Robot - Verben und Redemittel mit Darija</title>
+  <style>
+    :root {
+      --paper: #fffdf7;
+      --ink: #1e1e1e;
+      --blue: #0b3b77;
+      --green: #1f8a3d;
+      --orange: #f39c12;
+      --line: #d9e6cf;
+      --button: #0d6efd;
+      --button-hover: #0b5ed7;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+      background: linear-gradient(180deg, #f8f4ec 0%, #ede7da 100%);
+      color: var(--ink);
+      padding: 24px;
+    }
+    .container {
+      max-width: 1120px;
+      margin: auto;
+      background: var(--paper);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 18px 45px rgba(0,0,0,.12);
+      border: 4px solid #ffffff;
+    }
+    .header {
+      text-align: center;
+      padding: 16px 12px 28px;
+      border-bottom: 3px dashed var(--line);
+      margin-bottom: 24px;
+    }
+    .top-icons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 56px;
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 0;
+      color: var(--blue);
+      font-size: clamp(36px, 7vw, 78px);
+      line-height: 1;
+    }
+    h2 {
+      margin: 10px 0 6px;
+      color: var(--green);
+      font-size: clamp(28px, 5.8vw, 56px);
+      line-height: 1.08;
+    }
+    .subtitle {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .note {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #555;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .card {
+      border: 2px dashed #cfe2cf;
+      border-radius: 20px;
+      padding: 16px 18px;
+      background: #fffefb;
+    }
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1 1 520px;
+    }
+    .number {
+      font-size: 30px;
+      font-weight: 900;
+      width: 44px;
+    }
+    .emoji {
+      font-size: 42px;
+      width: 48px;
+      text-align: center;
+    }
+    .title-wrap { min-width: 0; }
+    .word {
+      font-size: clamp(26px, 4vw, 40px);
+      font-weight: 900;
+      line-height: 1.05;
+      word-break: break-word;
+    }
+    .translation {
+      margin-top: 4px;
+      font-size: 22px;
+      font-style: italic;
+      color: #444;
+    }
+    .toggle-btn {
+      border: none;
+      background: var(--button);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 14px;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(13,110,253,.20);
+      transition: transform .12s ease, background .2s ease;
+    }
+    .toggle-btn:hover {
+      background: var(--button-hover);
+      transform: translateY(-1px);
+    }
+    .examples {
+      display: none;
+      margin-top: 16px;
+      padding: 14px 16px;
+      background: #f8fbff;
+      border-radius: 16px;
+      border-left: 6px solid var(--orange);
+    }
+    .examples.show { display: block; }
+    .examples h4 {
+      margin: 0 0 10px;
+      color: var(--blue);
+      font-size: 22px;
+    }
+    .examples ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+    .examples li {
+      margin: 12px 0;
+      font-size: 19px;
+      line-height: 1.45;
+    }
+    .de {
+      font-weight: 800;
+      color: #222;
+    }
+    .darija {
+      margin-top: 4px;
+      color: #0f6b3a;
+      direction: rtl;
+      text-align: right;
+      font-family: "Arial", "Tahoma", sans-serif;
+      font-size: 20px;
+      background: #ecfff3;
+      padding: 7px 10px;
+      border-radius: 10px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .robot-panel {
+      margin: 0 0 24px;
+      border: 3px solid #b8d8ff;
+      background: linear-gradient(180deg, #f7fbff 0%, #eef7ff 100%);
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 12px 25px rgba(11,59,119,.10);
+    }
+    .robot-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .robot-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--blue);
+      font-size: clamp(26px, 4vw, 42px);
+      font-weight: 900;
+      line-height: 1.05;
+    }
+    .robot-badge {
+      background: #e7f5ff;
+      color: #0b3b77;
+      border: 2px dashed #74c0fc;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 900;
+      font-size: 15px;
+    }
+    .robot-instructions {
+      margin: 0 0 12px;
+      color: #444;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .robot-controls {
+      display: grid;
+      grid-template-columns: 1fr auto auto auto auto;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .robot-select,
+    .robot-input {
+      width: 100%;
+      border: 2px solid #cfe2ff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 17px;
+      font-family: inherit;
+      background: white;
+      color: #1e1e1e;
+    }
+    .robot-small-btn,
+    .robot-send {
+      border: none;
+      background: #0d6efd;
+      color: white;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-family: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(13,110,253,.18);
+    }
+    .robot-small-btn:hover,
+    .robot-send:hover { background: #0b5ed7; }
+    .chat-box {
+      height: 330px;
+      overflow-y: auto;
+      background: white;
+      border: 2px solid #dbeafe;
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg {
+      max-width: 86%;
+      border-radius: 18px;
+      padding: 11px 13px;
+      font-size: 17px;
+      line-height: 1.45;
+      white-space: pre-wrap;
+      box-shadow: 0 4px 10px rgba(0,0,0,.06);
+    }
+    .msg.bot {
+      align-self: flex-start;
+      background: #ecfff3;
+      border: 2px solid #c3f3d1;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: #e7f0ff;
+      border: 2px solid #cfe2ff;
+    }
+    .msg strong { color: var(--blue); }
+    .chat-input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .voice-zone {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+    .mic-btn {
+      border: none;
+      background: #e03131;
+      color: white;
+      border-radius: 18px;
+      padding: 16px 22px;
+      font-size: 22px;
+      font-family: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(224,49,49,.22);
+      min-width: 160px;
+    }
+    .mic-btn:hover { background: #c92a2a; }
+    .mic-btn.listening {
+      background: #2f9e44;
+      animation: pulseMic 1s infinite;
+    }
+    @keyframes pulseMic {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    .voice-output {
+      border: 2px solid #ffc9c9;
+      background: #fff5f5;
+      border-radius: 18px;
+      padding: 12px 14px;
+      min-height: 64px;
+      font-size: 17px;
+      font-weight: 800;
+      color: #333;
+    }
+    .voice-status {
+      margin-top: 8px;
+      color: #555;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .voice-status.good { color: #1f8a3d; }
+    .voice-status.bad { color: #d9480f; }
+    .darija-translation-box {
+      margin-top: 10px;
+      border: 2px solid #b7efc5;
+      background: #ecfff3;
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 18px;
+      font-weight: 900;
+      color: #0f6b3a;
+      direction: rtl;
+      text-align: right;
+      font-family: "Arial", "Tahoma", sans-serif;
+      min-height: 52px;
+    }
+
+    .robot-helper {
+      margin-top: 10px;
+      color: #555;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .robot-helper code {
+      background: #fff4d6;
+      padding: 2px 6px;
+      border-radius: 7px;
+    }
+
+    @media (max-width: 700px) {
+      body { padding: 10px; }
+      .container { padding: 16px; border-radius: 18px; }
+      .top-icons { font-size: 40px; }
+      .subtitle { font-size: 18px; }
+      .number { width: 34px; font-size: 24px; }
+      .emoji { width: 40px; font-size: 34px; }
+      .translation { font-size: 18px; }
+      .toggle-btn { width: 100%; }
+      .card-top { align-items: stretch; }
+      .darija { font-size: 18px; }
+      .robot-controls { grid-template-columns: 1fr; }
+      .chat-input-row { grid-template-columns: 1fr; }
+      .voice-zone { grid-template-columns: 1fr; }
+      .mic-btn { width: 100%; }
+      .msg { max-width: 96%; }
+    }
+  </style>
+  <script>
+    function toggleExamples(id, btn) {
+      const el = document.getElementById(id);
+      const isOpen = el.classList.contains('show');
+      if (isOpen) {
+        el.classList.remove('show');
+        btn.textContent = 'Dir 5 Beispiele + Darija';
+      } else {
+        el.classList.add('show');
+        btn.textContent = 'Khbi Beispiele';
+      }
+    }
+
+
+    const robotTopics = [{"number": "1.", "emoji": "🌅", "word": "den Horizont erweitern", "translation": "(to broaden one’s horizon)", "stems": ["horizont", "erweiter"], "examples": [{"de": "Ich möchte meinen Horizont durch Reisen erweitern.", "darija": "➜ بغيت نوسع الأفق ديالي عن طريق السفر."}, {"de": "Lesen hilft uns, den Horizont zu erweitern.", "darija": "➜ القراية كتعونا نوسعو الأفق ديالنا."}, {"de": "Ein Auslandsjahr kann den Horizont stark erweitern.", "darija": "➜ عام فبلاد أخرى يقدر يوسع الأفق بزاف."}, {"de": "Neue Kulturen erweitern meinen Horizont.", "darija": "➜ الثقافات الجديدة كاتوسع الأفق ديالي."}, {"de": "Der Kurs hat meinen Horizont erweitert.", "darija": "➜ هاد الكورس وسع ليا الأفق ديالي."}]}, {"number": "2.", "emoji": "🧩", "word": "etwas Neues ausprobieren", "translation": "(to try something new)", "stems": ["neu", "ausprobier"], "examples": [{"de": "Ich möchte am Wochenende etwas Neues ausprobieren.", "darija": "➜ بغيت نجرب شي حاجة جديدة فالويكاند."}, {"de": "Wir probieren heute ein neues Restaurant aus.", "darija": "➜ اليوم غنجربو مطعم جديد."}, {"de": "Sie probiert gern neue Hobbys aus.", "darija": "➜ هي كتحب تجرب هوايات جديدة."}, {"de": "Warum probierst du nicht etwas Neues aus?", "darija": "➜ علاش ما كتجربش شي حاجة جديدة؟"}, {"de": "Im Urlaub probiere ich immer etwas Neues aus.", "darija": "➜ فعطلة ديما كنجرب شي حاجة جديدة."}]}, {"number": "3.", "emoji": "🎒", "word": "ein Abenteuer erleben", "translation": "(to experience an adventure)", "stems": ["abenteuer", "erleb"], "examples": [{"de": "Wir haben in den Bergen ein tolles Abenteuer erlebt.", "darija": "➜ عشنا مغامرة زوينة فالجبال."}, {"de": "Kinder wollen oft ein Abenteuer erleben.", "darija": "➜ الدراري غالبا كيبغيو يعيشو مغامرة."}, {"de": "Auf dieser Reise erlebst du sicher ein Abenteuer.", "darija": "➜ فهاذ الرحلة أكيد غادي تعيش مغامرة."}, {"de": "Sie träumt davon, einmal ein großes Abenteuer zu erleben.", "darija": "➜ هي حالمة تعيش نهار واحد مغامرة كبيرة."}, {"de": "Im Wald haben wir ein kleines Abenteuer erlebt.", "darija": "➜ فعرض الغابة عشنا مغامرة صغيرة."}]}, {"number": "4.", "emoji": "⭐", "word": "sich überraschen lassen", "translation": "(to let oneself be surprised)", "stems": ["ueberrasch", "lass"], "examples": [{"de": "Ich lasse mich gern überraschen.", "darija": "➜ كنخلي راسي نتفاجأ وكنبغيها."}, {"de": "Lass dich von der Reise überraschen!", "darija": "➜ خلي الرحلة تفاجئك!"}, {"de": "Zum Geburtstag lasse ich mich überraschen.", "darija": "➜ فعيد الميلاد كنخليهم يفاجئوني."}, {"de": "Wir wissen nicht alles genau und lassen uns überraschen.", "darija": "➜ ما عارفينش كلشي بالضبط وخلّينا راسنا نتفاجؤو."}, {"de": "Manchmal ist es schön, sich einfach überraschen zu lassen.", "darija": "➜ مرات كاتكون زوينة غير تخلي راسك يتفاجأ."}]}, {"number": "5.", "emoji": "💬", "word": "eine neue Sprache lernen", "translation": "(to learn a new language)", "stems": ["sprache", "lern"], "examples": [{"de": "Ich lerne gerade eine neue Sprache.", "darija": "➜ دابا كنتعلم لغة جديدة."}, {"de": "Es ist nicht leicht, eine neue Sprache zu lernen.", "darija": "➜ ماشي ساهل تعلم لغة جديدة."}, {"de": "Sie lernt eine neue Sprache für ihren Job.", "darija": "➜ هي كتتعلم لغة جديدة على قبل الخدمة ديالها."}, {"de": "Wir möchten zusammen eine neue Sprache lernen.", "darija": "➜ بغينا نتعلمو لغة جديدة مع بعضياتنا."}, {"de": "Mit Musik kann man eine neue Sprache besser lernen.", "darija": "➜ بالموسيقى يمكن لك تتعلم لغة جديدة حسن."}]}, {"number": "6.", "emoji": "🧳", "word": "eine Reise machen", "translation": "(to take a trip)", "stems": ["reise", "mach"], "examples": [{"de": "Im Sommer machen wir eine Reise nach Spanien.", "darija": "➜ فالصيف غنديرو رحلة لإسبانيا."}, {"de": "Ich möchte nächstes Jahr eine lange Reise machen.", "darija": "➜ بغيت العام الجاي ندير رحلة طويلة."}, {"de": "Sie macht oft kurze Reisen mit ihrer Familie.", "darija": "➜ هي كتدير بزاف رحلات قصيرة مع العائلة ديالها."}, {"de": "Wir machen am Wochenende eine Reise ans Meer.", "darija": "➜ فالويكاند غنديرو رحلة للبحر."}, {"de": "Habt ihr schon einmal eine Reise allein gemacht?", "darija": "➜ واش عمركم درتو رحلة بوحدكم؟"}]}, {"number": "7.", "emoji": "⛰️", "word": "Erfahrungen sammeln", "translation": "(to gain experience)", "stems": ["erfahrung", "sammel"], "examples": [{"de": "Im Praktikum sammle ich viele Erfahrungen.", "darija": "➜ فالتدريب كنجمع بزاف ديال التجارب."}, {"de": "Reisen hilft, neue Erfahrungen zu sammeln.", "darija": "➜ السفر كيعون باش نجمعو تجارب جديدة."}, {"de": "Junge Leute wollen im Ausland Erfahrungen sammeln.", "darija": "➜ الشباب كيبغيو يجمعو تجارب فالخارج."}, {"de": "Man sammelt Erfahrungen durch Fehler und Erfolge.", "darija": "➜ الإنسان كيجمع التجارب بالأخطاء والنجاحات."}, {"de": "Sie hat in diesem Job viel Erfahrung gesammelt.", "darija": "➜ هي جمعت تجربة كبيرة فهاد الخدمة."}]}, {"number": "8.", "emoji": "🏊", "word": "ins kalte Wasser springen", "translation": "(to jump in at the deep end)", "stems": ["kalt", "wasser", "spring"], "examples": [{"de": "Am ersten Arbeitstag musste ich ins kalte Wasser springen.", "darija": "➜ فالنهار اللول فالخدمة خاصني ندخل دغيا فالموضوع."}, {"de": "Manchmal muss man einfach ins kalte Wasser springen.", "darija": "➜ مرات خاص الإنسان غير يجرب ويدخل مباشرة."}, {"de": "Ohne viel Vorbereitung ist er ins kalte Wasser gesprungen.", "darija": "➜ بلا تحضير بزاف دخل مباشرة فالتجربة."}, {"de": "Ich bin beim Deutschsprechen ins kalte Wasser gesprungen.", "darija": "➜ فالهضرة بالألمانية رميت راسي مباشرة وجربت."}, {"de": "Wer Erfolg haben will, muss manchmal ins kalte Wasser springen.", "darija": "➜ اللي باغي ينجح مرات خاصو يجازف ويدخل مباشرة."}]}, {"number": "9.", "emoji": "🔭", "word": "die Perspektive wechseln", "translation": "(to change perspective)", "stems": ["perspektive", "wechsel"], "examples": [{"de": "Wir sollten die Perspektive wechseln und anders denken.", "darija": "➜ خاصنا نبدلو النظرة ونفكرو بطريقة أخرى."}, {"de": "Reisen hilft, die Perspektive zu wechseln.", "darija": "➜ السفر كيعون على تبديل النظرة."}, {"de": "Versuche, bei Problemen die Perspektive zu wechseln.", "darija": "➜ حاول ملي تلقى مشكل تبدل الزاوية ديال التفكير."}, {"de": "Die Lehrerin bat uns, die Perspektive zu wechseln.", "darija": "➜ الأستاذة طلبت منا نبدلو المنظور."}, {"de": "Wenn ich mit anderen rede, kann ich leichter die Perspektive wechseln.", "darija": "➜ ملي كنهضر مع الناس كيسهل عليّ نبدل النظرة."}]}, {"number": "10.", "emoji": "💭", "word": "über etwas sprechen", "translation": "(to talk about something)", "stems": ["sprech", "sprach"], "examples": [{"de": "Wir sprechen heute über unsere Erfahrungen.", "darija": "➜ اليوم غنهضرو على التجارب ديالنا."}, {"de": "Kannst du über dein Problem sprechen?", "darija": "➜ واش تقدر تهضر على المشكل ديالك؟"}, {"de": "Im Kurs sprechen wir oft über Reisen.", "darija": "➜ فالكورس كنهضرو بزاف على السفر."}, {"de": "Sie spricht gern über fremde Kulturen.", "darija": "➜ هي كتحب تهضر على الثقافات الأخرى."}, {"de": "Lass uns später darüber sprechen.", "darija": "➜ خليونا نهضرو على هاد الشي من بعد."}]}, {"number": "11.", "emoji": "🎤", "word": "über etwas berichten", "translation": "(to report/tell about something)", "stems": ["bericht"], "examples": [{"de": "Er berichtet über seine Reise nach Deutschland.", "darija": "➜ هو كيهضر/كيقدم تقرير على الرحلة ديالو لألمانيا."}, {"de": "Die Schülerin berichtet über ihre Erfahrungen im Ausland.", "darija": "➜ التلميذة كتخبر على التجارب ديالها فالخارج."}, {"de": "Im Unterricht berichten wir über ein Thema.", "darija": "➜ فالقسم كنقدمو على موضوع."}, {"de": "Kannst du kurz über das Projekt berichten?", "darija": "➜ واش تقدر تخبرنا باختصار على المشروع؟"}, {"de": "Die Zeitung berichtet über neue Ereignisse.", "darija": "➜ الجريدة كتكتب/كتخبر على أحداث جديدة."}]}, {"number": "12.", "emoji": "📝", "word": "Notizen machen", "translation": "(to take notes)", "stems": ["notiz", "mach"], "examples": [{"de": "Im Unterricht mache ich immer Notizen.", "darija": "➜ فالقسم ديما كندير ملاحظات."}, {"de": "Bitte mach Notizen während des Gesprächs.", "darija": "➜ عافاك دير ملاحظات فاش كيكون الحوار."}, {"de": "Sie macht Notizen, damit sie nichts vergisst.", "darija": "➜ هي كتدير ملاحظات باش ما تنساش."}, {"de": "Beim Lesen mache ich wichtige Notizen.", "darija": "➜ ملي كنقرا كندير ملاحظات مهمة."}, {"de": "Wir sollten zu diesem Thema Notizen machen.", "darija": "➜ خاصنا نديرو ملاحظات على هاد الموضوع."}]}, {"number": "13.", "emoji": "👥", "word": "jemanden vorstellen", "translation": "(to introduce/present someone)", "stems": ["vorstell"], "examples": [{"de": "Ich möchte dir meinen Freund vorstellen.", "darija": "➜ بغيت نعرفك على صاحبي."}, {"de": "Die Lehrerin stellt den neuen Schüler vor.", "darija": "➜ الأستاذة كتقدم التلميذ الجديد."}, {"de": "Kannst du dich bitte kurz vorstellen?", "darija": "➜ واش تقدر تقدم راسك شوية؟"}, {"de": "Er stellte uns seine Kollegin vor.", "darija": "➜ هو عرفنا على الزميلة ديالو."}, {"de": "Morgen werde ich meine Familie vorstellen.", "darija": "➜ غدا غنقدم العائلة ديالي."}]}, {"number": "14.", "emoji": "⚖️", "word": "vergleichen", "translation": "(to compare)", "stems": ["vergleich"], "examples": [{"de": "Wir vergleichen zwei verschiedene Kulturen.", "darija": "➜ كنقارنو جوج ثقافات مختلفين."}, {"de": "Vergleiche bitte die beiden Texte.", "darija": "➜ عافاك قارن بين النصين."}, {"de": "Man soll Menschen nicht immer vergleichen.", "darija": "➜ ما خاصش الإنسان ديما يقارن الناس."}, {"de": "Im Kurs vergleichen wir Deutschland und Marokko.", "darija": "➜ فالكورس كنقارنو بين ألمانيا والمغرب."}, {"de": "Ich vergleiche die Preise vor dem Kauf.", "darija": "➜ كنقارن الأثمنة قبل ما نشري."}]}, {"number": "15.", "emoji": "🔮", "word": "erwarten", "translation": "(to expect)", "stems": ["erwart"], "examples": [{"de": "Ich erwarte morgen einen wichtigen Anruf.", "darija": "➜ كنتسنى غدا مكالمة مهمة."}, {"de": "Wir erwarten viele Gäste am Wochenende.", "darija": "➜ كنتسناو بزاف ديال الضياف فالويكاند."}, {"de": "Sie erwartet viel von ihrem neuen Job.", "darija": "➜ هي كتتسنى بزاف من الخدمة الجديدة ديالها."}, {"de": "Niemand hat so ein Ergebnis erwartet.", "darija": "➜ حتى واحد ما كان متسني هاد النتيجة."}, {"de": "Was erwartest du von diesem Kurs?", "darija": "➜ شنو كتتسنى من هاد الكورس؟"}]}, {"number": "16.", "emoji": "📅", "word": "planen", "translation": "(to plan)", "stems": ["plan"], "examples": [{"de": "Wir planen eine Reise für den Sommer.", "darija": "➜ كنخططو لرحلة فالصيف."}, {"de": "Ich plane meinen Tag am Abend vorher.", "darija": "➜ كنخطط نهاري من الليلة اللي قبل."}, {"de": "Sie plant, nächstes Jahr im Ausland zu studieren.", "darija": "➜ هي كاتخطط تقرا فالخارج العام الجاي."}, {"de": "Habt ihr schon das Projekt geplant?", "darija": "➜ واش خططتو للمشروع؟"}, {"de": "Ohne zu planen, wird alles schwieriger.", "darija": "➜ بلا تخطيط كلشي كيولي أصعب."}]}, {"number": "17.", "emoji": "✅", "word": "klappen", "translation": "(to work out / succeed)", "stems": ["klapp"], "examples": [{"de": "Ich hoffe, dass alles gut klappt.", "darija": "➜ كنتمنا كلشي يدوز مزيان."}, {"de": "Der Plan hat am Ende doch geklappt.", "darija": "➜ فالآخر الخطة نجحات."}, {"de": "Heute hat es leider nicht geklappt.", "darija": "➜ اليوم للأسف ما مشاتش."}, {"de": "Wenn wir zusammenarbeiten, wird es klappen.", "darija": "➜ إلى خدمنا مع بعضياتنا غادي تنجح."}, {"de": "Mit Geduld klappt es besser.", "darija": "➜ بالصبر كتمشي الأمور حسن."}]}];
+    let currentTopic = 0;
+    let exampleIndex = 0;
+    let recognition = null;
+    let isListening = false;
+    let finalVoiceText = '';
+    let lastCorrectedGerman = ''; 
+
+    function normalizeGerman(text) {
+      return (text || '')
+        .toLowerCase()
+        .replaceAll('ä', 'ae')
+        .replaceAll('ö', 'oe')
+        .replaceAll('ü', 'ue')
+        .replaceAll('ß', 'ss')
+        .replace(/[^a-z0-9\s.!?]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function capitalizeFirstGermanLetter(text) {
+      const sentence = (text || '').replace(/\s+/g, ' ').trim();
+      return sentence.replace(/^([a-zäöüß])/, letter => letter.toLocaleUpperCase('de-DE'));
+    }
+
+    function autoCorrectGermanText(text) {
+      let sentence = capitalizeFirstGermanLetter(text)
+        .replace(/\s+([.!?])/g, '$1')
+        .replace(/\s*,\s*/g, ', ');
+
+      const corrections = {
+        'horizont': 'Horizont',
+        'auslandsjahr': 'Auslandsjahr',
+        'kulturen': 'Kulturen',
+        'kultur': 'Kultur',
+        'kurs': 'Kurs',
+        'wochenende': 'Wochenende',
+        'restaurant': 'Restaurant',
+        'hobbys': 'Hobbys',
+        'urlaub': 'Urlaub',
+        'abenteuer': 'Abenteuer',
+        'bergen': 'Bergen',
+        'kinder': 'Kinder',
+        'reise': 'Reise',
+        'wald': 'Wald',
+        'sprache': 'Sprache',
+        'sprachen': 'Sprachen',
+        'job': 'Job',
+        'musik': 'Musik',
+        'sommer': 'Sommer',
+        'spanien': 'Spanien',
+        'deutschland': 'Deutschland',
+        'marokko': 'Marokko',
+        'jahr': 'Jahr',
+        'familie': 'Familie',
+        'meer': 'Meer',
+        'erfahrungen': 'Erfahrungen',
+        'erfahrung': 'Erfahrung',
+        'praktikum': 'Praktikum',
+        'ausland': 'Ausland',
+        'leute': 'Leute',
+        'fehler': 'Fehler',
+        'erfolge': 'Erfolge',
+        'arbeitstag': 'Arbeitstag',
+        'wasser': 'Wasser',
+        'vorbereitung': 'Vorbereitung',
+        'deutschsprechen': 'Deutschsprechen',
+        'erfolg': 'Erfolg',
+        'perspektive': 'Perspektive',
+        'probleme': 'Probleme',
+        'problemen': 'Problemen',
+        'problem': 'Problem',
+        'lehrerin': 'Lehrerin',
+        'projekt': 'Projekt',
+        'zeitung': 'Zeitung',
+        'ereignisse': 'Ereignisse',
+        'unterricht': 'Unterricht',
+        'notizen': 'Notizen',
+        'gespräch': 'Gespräch',
+        'gespraech': 'Gespräch',
+        'thema': 'Thema',
+        'freund': 'Freund',
+        'schüler': 'Schüler',
+        'schueler': 'Schüler',
+        'kollegin': 'Kollegin',
+        'menschen': 'Menschen',
+        'texte': 'Texte',
+        'preise': 'Preise',
+        'kauf': 'Kauf',
+        'anruf': 'Anruf',
+        'gäste': 'Gäste',
+        'gaeste': 'Gäste',
+        'ergebnis': 'Ergebnis',
+        'tag': 'Tag',
+        'abend': 'Abend',
+        'geduld': 'Geduld',
+        'plan': 'Plan'
+      };
+
+      Object.keys(corrections).forEach(key => {
+        const pattern = new RegExp('\\b' + key + '\\b', 'gi');
+        sentence = sentence.replace(pattern, corrections[key]);
+      });
+
+      if (sentence && !/[.!?]$/.test(sentence)) {
+        sentence += '.';
+      }
+      return sentence;
+    }
+
+    function cleanDarijaArrow(text) {
+      return (text || '').replace(/^\s*➜\s*/, '').trim();
+    }
+
+    function similarityScore(a, b) {
+      const aw = normalizeGerman(a).replace(/[.!?]$/g, '').split(' ').filter(Boolean);
+      const bw = normalizeGerman(b).replace(/[.!?]$/g, '').split(' ').filter(Boolean);
+      if (!aw.length || !bw.length) return 0;
+      const aset = new Set(aw);
+      const bset = new Set(bw);
+      let hit = 0;
+      aset.forEach(w => { if (bset.has(w)) hit += 1; });
+      return hit / Math.max(aset.size, bset.size);
+    }
+
+    function closestDarijaFromExamples(sentence) {
+      const topic = getTopic();
+      let best = { score: 0, darija: '', de: '' };
+      (topic.examples || []).forEach(ex => {
+        const score = similarityScore(sentence, ex.de);
+        if (score > best.score) best = { score, darija: cleanDarijaArrow(ex.darija), de: ex.de };
+      });
+      return best;
+    }
+
+    function subjectType(sentence) {
+      const clean = normalizeGerman(sentence);
+      if (/^wir\b/.test(clean)) return 'wir';
+      if (/^ich\b/.test(clean)) return 'ich';
+      if (/^du\b/.test(clean)) return 'du';
+      if (/^er\b/.test(clean)) return 'er';
+      if (/^sie\b/.test(clean)) return 'sie';
+      if (/^man\b/.test(clean)) return 'man';
+      if (/^ihr\b/.test(clean)) return 'ihr';
+      return 'neutral';
+    }
+
+    function pronounDarija(sentence) {
+      const st = subjectType(sentence);
+      return {
+        ich: 'أنا',
+        wir: 'حنا',
+        du: 'نتا/نتي',
+        er: 'هو',
+        sie: 'هي/هما',
+        man: 'الإنسان',
+        ihr: 'نتوما',
+        neutral: 'هاد الجملة'
+      }[st] || 'هاد الجملة';
+    }
+
+    function approximateDarijaByTopic(sentence) {
+      const topic = getTopic();
+      const st = subjectType(sentence);
+      const p = pronounDarija(sentence);
+      const plural = ['wir', 'ihr'].includes(st);
+
+      const table = {
+        'den Horizont erweitern': plural ? 'كنوسعو الأفق ديالنا.' : p + ' كيوسع الأفق ديالو / كنوسع الأفق ديالي.',
+        'etwas Neues ausprobieren': plural ? 'كنجربو شي حاجة جديدة.' : p + ' كيجرب شي حاجة جديدة / كنجرب شي حاجة جديدة.',
+        'ein Abenteuer erleben': plural ? 'كنعيشو مغامرة.' : p + ' كيعيش مغامرة / كنعيش مغامرة.',
+        'sich überraschen lassen': plural ? 'كنخليو راسنا نتفاجؤو.' : p + ' كيخلي راسو يتفاجأ / كنخلي راسي نتفاجأ.',
+        'eine neue Sprache lernen': plural ? 'كنتعلمو لغة جديدة.' : p + ' كيتعلم لغة جديدة / كنتعلم لغة جديدة.',
+        'eine Reise machen': plural ? 'كنديرو رحلة.' : p + ' كيدير رحلة / كندير رحلة.',
+        'Erfahrungen sammeln': plural ? 'كنجمعو تجارب جديدة.' : p + ' كيجمع تجارب / كنجمع تجارب.',
+        'ins kalte Wasser springen': plural ? 'كنرميّو راسنا فالتجربة وكنجربو مباشرة.' : p + ' كيرمي راسو فالتجربة وكيجرب مباشرة.',
+        'die Perspektive wechseln': plural ? 'كنبدلو النظرة ديالنا.' : p + ' كيبدل النظرة ديالو / كنبدل النظرة ديالي.',
+        'über etwas sprechen': plural ? 'كنهضرو على هاد الشي.' : p + ' كيهضر على هاد الشي / كنهضر على هاد الشي.',
+        'über etwas berichten': plural ? 'كنقدمو تقرير على هاد الشي.' : p + ' كيخبر/كيقدم تقرير على هاد الشي.',
+        'Notizen machen': plural ? 'كنديرو ملاحظات.' : p + ' كيدير ملاحظات / كندير ملاحظات.',
+        'jemanden vorstellen': plural ? 'كنقدمو شي واحد / كنعرفو بشي واحد.' : p + ' كيقدم شي واحد / كنعرفك على شي واحد.',
+        'vergleichen': plural ? 'كنقارنو بين جوج حوايج.' : p + ' كيقارن بين جوج حوايج / كنقارن.',
+        'erwarten': plural ? 'كنتسناو شي حاجة.' : p + ' كيتسنى شي حاجة / كنتسنى شي حاجة.',
+        'planen': plural ? 'كنخططو لشي حاجة.' : p + ' كيخطط لشي حاجة / كنخطط لشي حاجة.',
+        'klappen': 'المعنى: هاد الشي نجح / داز مزيان / غادي ينجح.'
+      };
+      return table[topic.word] || 'ترجمة تقريبية: ' + p + ' قال جملة على الموضوع المختار.';
+    }
+
+    function translateGermanToDarija(sentence) {
+      const closest = closestDarijaFromExamples(sentence);
+      if (closest.score >= 0.45) return closest.darija;
+      return approximateDarijaByTopic(sentence);
+    }
+
+    function showDarijaTranslation(sentence) {
+      const box = document.getElementById('darijaTranslationBox');
+      const text = sentence ? 'Darija: ' + translateGermanToDarija(sentence) : 'Darija...';
+      if (box) box.textContent = text;
+      return text;
+    }
+
+    function robotTranslateLast() {
+      if (!lastCorrectedGerman) {
+        addMessage('bot', 'Mazal ma kayn Satz. 🎙️ Tkellem.');
+        return;
+      }
+      addMessage('bot', showDarijaTranslation(lastCorrectedGerman));
+    }
+
+    function addMessage(sender, text) {
+      const chat = document.getElementById('chatBox');
+      const bubble = document.createElement('div');
+      bubble.className = 'msg ' + sender;
+      bubble.textContent = text;
+      chat.appendChild(bubble);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function getTopic() {
+      return robotTopics[currentTopic] || robotTopics[0];
+    }
+
+    function fillTopicSelect() {
+      const select = document.getElementById('topicSelect');
+      if (!select) return;
+      robotTopics.forEach((topic, index) => {
+        const option = document.createElement('option');
+        option.value = String(index);
+        option.textContent = topic.number + ' ' + topic.emoji + ' ' + topic.word + ' ' + topic.translation;
+        select.appendChild(option);
+      });
+      select.addEventListener('change', () => {
+        currentTopic = Number(select.value || 0);
+        exampleIndex = 0;
+        const topic = getTopic();
+        addMessage('bot', 'Thema: ' + topic.word + '\n🎙️ Tkellem.');
+      });
+    }
+
+    function robotExample() {
+      const topic = getTopic();
+      if (!topic || !topic.examples.length) return;
+      const ex = topic.examples[exampleIndex % topic.examples.length];
+      exampleIndex += 1;
+      addMessage('bot', 'Beispiel: ' + ex.de + '\nDarija: ' + cleanDarijaArrow(ex.darija));
+    }
+
+    function robotQuestion() {
+      const topic = getTopic();
+      addMessage('bot', 'Sag einen Satz mit: ' + topic.word);
+    }
+
+    function robotHint() {
+      const topic = getTopic();
+      const sample = topic.examples[0] ? topic.examples[0].de : 'Ich schreibe einen Satz.';
+      addMessage('bot', 'Tipp: ' + topic.word + '\nBeispiel: ' + sample);
+    }
+
+    function analyzeSentence(sentence, originalSentence) {
+      const topic = getTopic();
+      const clean = normalizeGerman(sentence);
+      const words = clean ? clean.split(' ') : [];
+      const issues = [];
+      const matched = [];
+      (topic.stems || []).forEach(stem => {
+        if (clean.includes(stem)) matched.push(stem);
+      });
+      const needed = topic.stems && topic.stems.length >= 2 ? 2 : 1;
+      if (matched.length < needed) {
+        issues.push('Das Redemittel fehlt oder ist nicht klar: "' + topic.word + '".');
+      }
+      if (words.length < 5) {
+        issues.push('Der Satz ist noch zu kurz. Mach einen ganzen Satz mit Subjekt + Verb + Ergänzung.');
+      }
+      if ((originalSentence || sentence).trim() && !/^[A-ZÄÖÜ]/.test((originalSentence || sentence).trim())) {
+        issues.push('Der erste Buchstabe muss groß sein.');
+      }
+      if ((originalSentence || sentence).trim() && !/[.!?]$/.test((originalSentence || sentence).trim())) {
+        issues.push('Am Satzende fehlt ein Punkt, ein Fragezeichen oder ein Ausrufezeichen.');
+      }
+      return { issues, matched };
+    }
+
+    function correctionReply(sentence, originalSentence) {
+      const topic = getTopic();
+      const result = analyzeSentence(sentence, originalSentence);
+      const improved = autoCorrectGermanText(sentence);
+      const darija = translateGermanToDarija(improved);
+
+      if (result.issues.length === 0) {
+        return '✅ Richtig!\nDeutsch: ' + improved + '\nDarija: ' + darija;
+      }
+
+      let tip = '';
+      if (result.issues.some(issue => issue.includes('Redemittel'))) {
+        tip = '\nTipp: nutze "' + topic.word + '".';
+      } else if (result.issues.some(issue => issue.includes('kurz'))) {
+        tip = '\nTipp: mach einen ganzen Satz.';
+      }
+
+      return '✅ Korrigiert:\nDeutsch: ' + improved + '\nDarija: ' + darija + tip;
+    }
+
+    function setVoiceStatus(text, type) {
+      const status = document.getElementById('voiceStatus');
+      if (!status) return;
+      status.textContent = text;
+      status.className = 'voice-status' + (type ? ' ' + type : '');
+    }
+
+    function setVoiceOutput(text) {
+      const output = document.getElementById('voiceOutput');
+      if (!output) return;
+      output.textContent = text || 'Hna ghadi tban l-jomla m9ada b Deutsch...';
+    }
+
+    function processStudentText(text) {
+      const originalText = (text || '').trim();
+      if (!originalText) {
+        setVoiceStatus('Ma sme3t walo. 3awed dghat 3la mic w tkellem b waDe7.', 'bad');
+        return;
+      }
+
+      const correctedText = autoCorrectGermanText(originalText);
+      lastCorrectedGerman = correctedText;
+      setVoiceOutput(correctedText);
+      showDarijaTranslation(correctedText);
+      addMessage('user', correctedText);
+
+      const command = normalizeGerman(originalText).replace(/[.!?]$/, '');
+      if (command === 'beispiel') {
+        robotExample();
+        return;
+      }
+      if (command === 'hint') {
+        robotHint();
+        return;
+      }
+      if (command === 'sowlni' || command === 'frage') {
+        robotQuestion();
+        return;
+      }
+      addMessage('bot', correctionReply(correctedText, originalText));
+    }
+
+    function setupSpeechRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const micBtn = document.getElementById('micBtn');
+      if (!SpeechRecognition) {
+        if (micBtn) micBtn.disabled = true;
+        setVoiceStatus('Had browser ma kayd3amch Speech-to-Text. Khasso Chrome ola Edge.', 'bad');
+        addMessage('bot', '❌ Mic ma khdamch hna. 7ell l-file f Chrome/Edge, w 3ti permission l-micro.');
+        return;
+      }
+      recognition = new SpeechRecognition();
+      recognition.lang = 'de-DE';
+      recognition.continuous = false;
+      recognition.interimResults = true;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = function() {
+        isListening = true;
+        finalVoiceText = '';
+        if (micBtn) {
+          micBtn.classList.add('listening');
+          micBtn.textContent = '🟢 Kanhder...';
+        }
+        setVoiceOutput('Kan-tsenna jomla dyalek...');
+        setVoiceStatus('Tkellem daba b Deutsch. Mlli tsali, robot ghadi ysa7a7.', 'good');
+      };
+
+      recognition.onresult = function(event) {
+        let interim = '';
+        for (let i = event.resultIndex; i < event.results.length; i += 1) {
+          const transcript = event.results[i][0].transcript.trim();
+          if (event.results[i].isFinal) {
+            finalVoiceText += (finalVoiceText ? ' ' : '') + transcript;
+          } else {
+            interim += transcript;
+          }
+        }
+        setVoiceOutput(finalVoiceText || interim || 'Kan-tsenna jomla dyalek...');
+      };
+
+      recognition.onerror = function(event) {
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove('listening');
+          micBtn.textContent = '🎙️ Tkellem';
+        }
+        const msg = event.error === 'not-allowed'
+          ? 'Khass t3ti permission l micro.'
+          : 'Mic error: ' + event.error;
+        setVoiceStatus(msg, 'bad');
+      };
+
+      recognition.onend = function() {
+        const spoken = finalVoiceText.trim();
+        isListening = false;
+        if (micBtn) {
+          micBtn.classList.remove('listening');
+          micBtn.textContent = '🎙️ Tkellem';
+        }
+        if (spoken) {
+          setVoiceStatus('Tsalat l-jomla. Robot kayse7e7 daba b Deutsch.', 'good');
+          processStudentText(spoken);
+        } else {
+          setVoiceStatus('Ma ttsjlat ta jomla. Dghat 3la mic w 3awed.', 'bad');
+        }
+      };
+    }
+
+    function startVoice() {
+      if (!recognition) setupSpeechRecognition();
+      if (!recognition) return;
+      try {
+        if (isListening) {
+          recognition.stop();
+          return;
+        }
+        recognition.start();
+      } catch (e) {
+        setVoiceStatus('3awed jreb men b3d thanya. Ila bqa lmochkil, refresh l page.', 'bad');
+      }
+    }
+
+    function sendStudentMessage() {
+      processStudentText(finalVoiceText || '');
+    }
+
+    function initRobot() {
+      fillTopicSelect();
+      setupSpeechRecognition();
+      addMessage('bot', 'Salam! 🤖 Khtar Redemittel, dghat 🎙️, w tkellem b Deutsch.');
+      robotExample();
+    }
+
+    document.addEventListener('DOMContentLoaded', initRobot);
+
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div class="top-icons">
+        <span>☀️</span>
+        <span>🎈</span>
+      </div>
+      <h1>Verben &amp; Redemittel</h1>
+      <h2>Den Horizont erweitern</h2>
+      <div class="subtitle">(Verbs – pages 1 &amp; 2)</div>
+      <div class="note">Klik 3la <strong>"Dir 5 Beispiele + Darija"</strong> باش يبانولك الأمثلة ديال كل فعل مع الترجمة بالدارجة.</div>
+    </header>
+
+
+    <section class="robot-panel" id="text-robot">
+      <div class="robot-head">
+        <div class="robot-title"><span>🤖</span><span>Voice-Robot: kurze Antworten</span></div>
+        <div class="robot-badge">Talmid kaytkellem فقط</div>
+      </div>
+      <p class="robot-instructions">Khtar Redemittel, dghat 3la mic, w tkellem. Robot kayjawb b jomla qasira فقط.</p>
+      <div class="robot-controls">
+        <select id="topicSelect" class="robot-select" aria-label="Redemittel"></select>
+        <button class="robot-small-btn" type="button" onclick="robotExample()">Beispiel</button>
+        <button class="robot-small-btn" type="button" onclick="robotQuestion()">Sowlni</button>
+        <button class="robot-small-btn" type="button" onclick="robotHint()">Hint</button>
+        <button class="robot-small-btn" type="button" onclick="robotTranslateLast()">Tarjem Darija</button>
+      </div>
+      <div id="chatBox" class="chat-box" aria-live="polite"></div>
+      <div class="voice-zone">
+        <button id="micBtn" class="mic-btn" type="button" onclick="startVoice()">🎙️ Tkellem</button>
+        <div>
+          <div id="voiceOutput" class="voice-output">Hna ghadi tban l-jomla m9ada b Deutsch...</div>
+          <div id="darijaTranslationBox" class="darija-translation-box">هنا غادي تبان الترجمة بالدارجة...</div>
+          <div id="voiceStatus" class="voice-status">Dghat 3la mic w tkellem b Deutsch.</div>
+        </div>
+      </div>
+      <div class="robot-helper">Talmid ma kayktebch: غير كيدغط على <code>🎙️ Tkellem</code>. Robot kayjawb b qlil: Deutsch + Darija.</div>
+    </section>
+
+
+    <section class="cards">
+      
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">1.</span>
+          <span class="emoji">🌅</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#1e66d0">den Horizont erweitern</div>
+            <div class="translation">(to broaden one’s horizon)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex1', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex1" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich möchte meinen Horizont durch Reisen erweitern.</div>
+          <div class="darija">➜ بغيت نوسع الأفق ديالي عن طريق السفر.</div>
+        </li><li>
+          <div class="de">Lesen hilft uns, den Horizont zu erweitern.</div>
+          <div class="darija">➜ القراية كتعونا نوسعو الأفق ديالنا.</div>
+        </li><li>
+          <div class="de">Ein Auslandsjahr kann den Horizont stark erweitern.</div>
+          <div class="darija">➜ عام فبلاد أخرى يقدر يوسع الأفق بزاف.</div>
+        </li><li>
+          <div class="de">Neue Kulturen erweitern meinen Horizont.</div>
+          <div class="darija">➜ الثقافات الجديدة كاتوسع الأفق ديالي.</div>
+        </li><li>
+          <div class="de">Der Kurs hat meinen Horizont erweitert.</div>
+          <div class="darija">➜ هاد الكورس وسع ليا الأفق ديالي.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">2.</span>
+          <span class="emoji">🧩</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#f28c18">etwas Neues ausprobieren</div>
+            <div class="translation">(to try something new)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex2', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex2" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich möchte am Wochenende etwas Neues ausprobieren.</div>
+          <div class="darija">➜ بغيت نجرب شي حاجة جديدة فالويكاند.</div>
+        </li><li>
+          <div class="de">Wir probieren heute ein neues Restaurant aus.</div>
+          <div class="darija">➜ اليوم غنجربو مطعم جديد.</div>
+        </li><li>
+          <div class="de">Sie probiert gern neue Hobbys aus.</div>
+          <div class="darija">➜ هي كتحب تجرب هوايات جديدة.</div>
+        </li><li>
+          <div class="de">Warum probierst du nicht etwas Neues aus?</div>
+          <div class="darija">➜ علاش ما كتجربش شي حاجة جديدة؟</div>
+        </li><li>
+          <div class="de">Im Urlaub probiere ich immer etwas Neues aus.</div>
+          <div class="darija">➜ فعطلة ديما كنجرب شي حاجة جديدة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">3.</span>
+          <span class="emoji">🎒</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#2f9e44">ein Abenteuer erleben</div>
+            <div class="translation">(to experience an adventure)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex3', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex3" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Wir haben in den Bergen ein tolles Abenteuer erlebt.</div>
+          <div class="darija">➜ عشنا مغامرة زوينة فالجبال.</div>
+        </li><li>
+          <div class="de">Kinder wollen oft ein Abenteuer erleben.</div>
+          <div class="darija">➜ الدراري غالبا كيبغيو يعيشو مغامرة.</div>
+        </li><li>
+          <div class="de">Auf dieser Reise erlebst du sicher ein Abenteuer.</div>
+          <div class="darija">➜ فهاذ الرحلة أكيد غادي تعيش مغامرة.</div>
+        </li><li>
+          <div class="de">Sie träumt davon, einmal ein großes Abenteuer zu erleben.</div>
+          <div class="darija">➜ هي حالمة تعيش نهار واحد مغامرة كبيرة.</div>
+        </li><li>
+          <div class="de">Im Wald haben wir ein kleines Abenteuer erlebt.</div>
+          <div class="darija">➜ فعرض الغابة عشنا مغامرة صغيرة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">4.</span>
+          <span class="emoji">⭐</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#7b5cc7">sich überraschen lassen</div>
+            <div class="translation">(to let oneself be surprised)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex4', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex4" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich lasse mich gern überraschen.</div>
+          <div class="darija">➜ كنخلي راسي نتفاجأ وكنبغيها.</div>
+        </li><li>
+          <div class="de">Lass dich von der Reise überraschen!</div>
+          <div class="darija">➜ خلي الرحلة تفاجئك!</div>
+        </li><li>
+          <div class="de">Zum Geburtstag lasse ich mich überraschen.</div>
+          <div class="darija">➜ فعيد الميلاد كنخليهم يفاجئوني.</div>
+        </li><li>
+          <div class="de">Wir wissen nicht alles genau und lassen uns überraschen.</div>
+          <div class="darija">➜ ما عارفينش كلشي بالضبط وخلّينا راسنا نتفاجؤو.</div>
+        </li><li>
+          <div class="de">Manchmal ist es schön, sich einfach überraschen zu lassen.</div>
+          <div class="darija">➜ مرات كاتكون زوينة غير تخلي راسك يتفاجأ.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">5.</span>
+          <span class="emoji">💬</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#0ea5a8">eine neue Sprache lernen</div>
+            <div class="translation">(to learn a new language)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex5', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex5" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich lerne gerade eine neue Sprache.</div>
+          <div class="darija">➜ دابا كنتعلم لغة جديدة.</div>
+        </li><li>
+          <div class="de">Es ist nicht leicht, eine neue Sprache zu lernen.</div>
+          <div class="darija">➜ ماشي ساهل تعلم لغة جديدة.</div>
+        </li><li>
+          <div class="de">Sie lernt eine neue Sprache für ihren Job.</div>
+          <div class="darija">➜ هي كتتعلم لغة جديدة على قبل الخدمة ديالها.</div>
+        </li><li>
+          <div class="de">Wir möchten zusammen eine neue Sprache lernen.</div>
+          <div class="darija">➜ بغينا نتعلمو لغة جديدة مع بعضياتنا.</div>
+        </li><li>
+          <div class="de">Mit Musik kann man eine neue Sprache besser lernen.</div>
+          <div class="darija">➜ بالموسيقى يمكن لك تتعلم لغة جديدة حسن.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">6.</span>
+          <span class="emoji">🧳</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#e64980">eine Reise machen</div>
+            <div class="translation">(to take a trip)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex6', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex6" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Im Sommer machen wir eine Reise nach Spanien.</div>
+          <div class="darija">➜ فالصيف غنديرو رحلة لإسبانيا.</div>
+        </li><li>
+          <div class="de">Ich möchte nächstes Jahr eine lange Reise machen.</div>
+          <div class="darija">➜ بغيت العام الجاي ندير رحلة طويلة.</div>
+        </li><li>
+          <div class="de">Sie macht oft kurze Reisen mit ihrer Familie.</div>
+          <div class="darija">➜ هي كتدير بزاف رحلات قصيرة مع العائلة ديالها.</div>
+        </li><li>
+          <div class="de">Wir machen am Wochenende eine Reise ans Meer.</div>
+          <div class="darija">➜ فالويكاند غنديرو رحلة للبحر.</div>
+        </li><li>
+          <div class="de">Habt ihr schon einmal eine Reise allein gemacht?</div>
+          <div class="darija">➜ واش عمركم درتو رحلة بوحدكم؟</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">7.</span>
+          <span class="emoji">⛰️</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#f76707">Erfahrungen sammeln</div>
+            <div class="translation">(to gain experience)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex7', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex7" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Im Praktikum sammle ich viele Erfahrungen.</div>
+          <div class="darija">➜ فالتدريب كنجمع بزاف ديال التجارب.</div>
+        </li><li>
+          <div class="de">Reisen hilft, neue Erfahrungen zu sammeln.</div>
+          <div class="darija">➜ السفر كيعون باش نجمعو تجارب جديدة.</div>
+        </li><li>
+          <div class="de">Junge Leute wollen im Ausland Erfahrungen sammeln.</div>
+          <div class="darija">➜ الشباب كيبغيو يجمعو تجارب فالخارج.</div>
+        </li><li>
+          <div class="de">Man sammelt Erfahrungen durch Fehler und Erfolge.</div>
+          <div class="darija">➜ الإنسان كيجمع التجارب بالأخطاء والنجاحات.</div>
+        </li><li>
+          <div class="de">Sie hat in diesem Job viel Erfahrung gesammelt.</div>
+          <div class="darija">➜ هي جمعت تجربة كبيرة فهاد الخدمة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">8.</span>
+          <span class="emoji">🏊</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#1f6feb">ins kalte Wasser springen</div>
+            <div class="translation">(to jump in at the deep end)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex8', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex8" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Am ersten Arbeitstag musste ich ins kalte Wasser springen.</div>
+          <div class="darija">➜ فالنهار اللول فالخدمة خاصني ندخل دغيا فالموضوع.</div>
+        </li><li>
+          <div class="de">Manchmal muss man einfach ins kalte Wasser springen.</div>
+          <div class="darija">➜ مرات خاص الإنسان غير يجرب ويدخل مباشرة.</div>
+        </li><li>
+          <div class="de">Ohne viel Vorbereitung ist er ins kalte Wasser gesprungen.</div>
+          <div class="darija">➜ بلا تحضير بزاف دخل مباشرة فالتجربة.</div>
+        </li><li>
+          <div class="de">Ich bin beim Deutschsprechen ins kalte Wasser gesprungen.</div>
+          <div class="darija">➜ فالهضرة بالألمانية رميت راسي مباشرة وجربت.</div>
+        </li><li>
+          <div class="de">Wer Erfolg haben will, muss manchmal ins kalte Wasser springen.</div>
+          <div class="darija">➜ اللي باغي ينجح مرات خاصو يجازف ويدخل مباشرة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">9.</span>
+          <span class="emoji">🔭</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#37b24d">die Perspektive wechseln</div>
+            <div class="translation">(to change perspective)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex9', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex9" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Wir sollten die Perspektive wechseln und anders denken.</div>
+          <div class="darija">➜ خاصنا نبدلو النظرة ونفكرو بطريقة أخرى.</div>
+        </li><li>
+          <div class="de">Reisen hilft, die Perspektive zu wechseln.</div>
+          <div class="darija">➜ السفر كيعون على تبديل النظرة.</div>
+        </li><li>
+          <div class="de">Versuche, bei Problemen die Perspektive zu wechseln.</div>
+          <div class="darija">➜ حاول ملي تلقى مشكل تبدل الزاوية ديال التفكير.</div>
+        </li><li>
+          <div class="de">Die Lehrerin bat uns, die Perspektive zu wechseln.</div>
+          <div class="darija">➜ الأستاذة طلبت منا نبدلو المنظور.</div>
+        </li><li>
+          <div class="de">Wenn ich mit anderen rede, kann ich leichter die Perspektive wechseln.</div>
+          <div class="darija">➜ ملي كنهضر مع الناس كيسهل عليّ نبدل النظرة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">10.</span>
+          <span class="emoji">💭</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#845ec2">über etwas sprechen</div>
+            <div class="translation">(to talk about something)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex10', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex10" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Wir sprechen heute über unsere Erfahrungen.</div>
+          <div class="darija">➜ اليوم غنهضرو على التجارب ديالنا.</div>
+        </li><li>
+          <div class="de">Kannst du über dein Problem sprechen?</div>
+          <div class="darija">➜ واش تقدر تهضر على المشكل ديالك؟</div>
+        </li><li>
+          <div class="de">Im Kurs sprechen wir oft über Reisen.</div>
+          <div class="darija">➜ فالكورس كنهضرو بزاف على السفر.</div>
+        </li><li>
+          <div class="de">Sie spricht gern über fremde Kulturen.</div>
+          <div class="darija">➜ هي كتحب تهضر على الثقافات الأخرى.</div>
+        </li><li>
+          <div class="de">Lass uns später darüber sprechen.</div>
+          <div class="darija">➜ خليونا نهضرو على هاد الشي من بعد.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">11.</span>
+          <span class="emoji">🎤</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#0ca9b0">über etwas berichten</div>
+            <div class="translation">(to report/tell about something)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex11', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex11" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Er berichtet über seine Reise nach Deutschland.</div>
+          <div class="darija">➜ هو كيهضر/كيقدم تقرير على الرحلة ديالو لألمانيا.</div>
+        </li><li>
+          <div class="de">Die Schülerin berichtet über ihre Erfahrungen im Ausland.</div>
+          <div class="darija">➜ التلميذة كتخبر على التجارب ديالها فالخارج.</div>
+        </li><li>
+          <div class="de">Im Unterricht berichten wir über ein Thema.</div>
+          <div class="darija">➜ فالقسم كنقدمو على موضوع.</div>
+        </li><li>
+          <div class="de">Kannst du kurz über das Projekt berichten?</div>
+          <div class="darija">➜ واش تقدر تخبرنا باختصار على المشروع؟</div>
+        </li><li>
+          <div class="de">Die Zeitung berichtet über neue Ereignisse.</div>
+          <div class="darija">➜ الجريدة كتكتب/كتخبر على أحداث جديدة.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">12.</span>
+          <span class="emoji">📝</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#ff6b6b">Notizen machen</div>
+            <div class="translation">(to take notes)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex12', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex12" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Im Unterricht mache ich immer Notizen.</div>
+          <div class="darija">➜ فالقسم ديما كندير ملاحظات.</div>
+        </li><li>
+          <div class="de">Bitte mach Notizen während des Gesprächs.</div>
+          <div class="darija">➜ عافاك دير ملاحظات فاش كيكون الحوار.</div>
+        </li><li>
+          <div class="de">Sie macht Notizen, damit sie nichts vergisst.</div>
+          <div class="darija">➜ هي كتدير ملاحظات باش ما تنساش.</div>
+        </li><li>
+          <div class="de">Beim Lesen mache ich wichtige Notizen.</div>
+          <div class="darija">➜ ملي كنقرا كندير ملاحظات مهمة.</div>
+        </li><li>
+          <div class="de">Wir sollten zu diesem Thema Notizen machen.</div>
+          <div class="darija">➜ خاصنا نديرو ملاحظات على هاد الموضوع.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">13.</span>
+          <span class="emoji">👥</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#f08c00">jemanden vorstellen</div>
+            <div class="translation">(to introduce/present someone)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex13', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex13" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich möchte dir meinen Freund vorstellen.</div>
+          <div class="darija">➜ بغيت نعرفك على صاحبي.</div>
+        </li><li>
+          <div class="de">Die Lehrerin stellt den neuen Schüler vor.</div>
+          <div class="darija">➜ الأستاذة كتقدم التلميذ الجديد.</div>
+        </li><li>
+          <div class="de">Kannst du dich bitte kurz vorstellen?</div>
+          <div class="darija">➜ واش تقدر تقدم راسك شوية؟</div>
+        </li><li>
+          <div class="de">Er stellte uns seine Kollegin vor.</div>
+          <div class="darija">➜ هو عرفنا على الزميلة ديالو.</div>
+        </li><li>
+          <div class="de">Morgen werde ich meine Familie vorstellen.</div>
+          <div class="darija">➜ غدا غنقدم العائلة ديالي.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">14.</span>
+          <span class="emoji">⚖️</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#1e66d0">vergleichen</div>
+            <div class="translation">(to compare)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex14', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex14" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Wir vergleichen zwei verschiedene Kulturen.</div>
+          <div class="darija">➜ كنقارنو جوج ثقافات مختلفين.</div>
+        </li><li>
+          <div class="de">Vergleiche bitte die beiden Texte.</div>
+          <div class="darija">➜ عافاك قارن بين النصين.</div>
+        </li><li>
+          <div class="de">Man soll Menschen nicht immer vergleichen.</div>
+          <div class="darija">➜ ما خاصش الإنسان ديما يقارن الناس.</div>
+        </li><li>
+          <div class="de">Im Kurs vergleichen wir Deutschland und Marokko.</div>
+          <div class="darija">➜ فالكورس كنقارنو بين ألمانيا والمغرب.</div>
+        </li><li>
+          <div class="de">Ich vergleiche die Preise vor dem Kauf.</div>
+          <div class="darija">➜ كنقارن الأثمنة قبل ما نشري.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">15.</span>
+          <span class="emoji">🔮</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#2f9e44">erwarten</div>
+            <div class="translation">(to expect)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex15', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex15" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich erwarte morgen einen wichtigen Anruf.</div>
+          <div class="darija">➜ كنتسنى غدا مكالمة مهمة.</div>
+        </li><li>
+          <div class="de">Wir erwarten viele Gäste am Wochenende.</div>
+          <div class="darija">➜ كنتسناو بزاف ديال الضياف فالويكاند.</div>
+        </li><li>
+          <div class="de">Sie erwartet viel von ihrem neuen Job.</div>
+          <div class="darija">➜ هي كتتسنى بزاف من الخدمة الجديدة ديالها.</div>
+        </li><li>
+          <div class="de">Niemand hat so ein Ergebnis erwartet.</div>
+          <div class="darija">➜ حتى واحد ما كان متسني هاد النتيجة.</div>
+        </li><li>
+          <div class="de">Was erwartest du von diesem Kurs?</div>
+          <div class="darija">➜ شنو كتتسنى من هاد الكورس؟</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">16.</span>
+          <span class="emoji">📅</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#8e5cf7">planen</div>
+            <div class="translation">(to plan)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex16', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex16" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Wir planen eine Reise für den Sommer.</div>
+          <div class="darija">➜ كنخططو لرحلة فالصيف.</div>
+        </li><li>
+          <div class="de">Ich plane meinen Tag am Abend vorher.</div>
+          <div class="darija">➜ كنخطط نهاري من الليلة اللي قبل.</div>
+        </li><li>
+          <div class="de">Sie plant, nächstes Jahr im Ausland zu studieren.</div>
+          <div class="darija">➜ هي كاتخطط تقرا فالخارج العام الجاي.</div>
+        </li><li>
+          <div class="de">Habt ihr schon das Projekt geplant?</div>
+          <div class="darija">➜ واش خططتو للمشروع؟</div>
+        </li><li>
+          <div class="de">Ohne zu planen, wird alles schwieriger.</div>
+          <div class="darija">➜ بلا تخطيط كلشي كيولي أصعب.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    <article class="card">
+      <div class="card-top">
+        <div class="left">
+          <span class="number">17.</span>
+          <span class="emoji">✅</span>
+          <div class="title-wrap">
+            <div class="word" style="color:#15aabf">klappen</div>
+            <div class="translation">(to work out / succeed)</div>
+          </div>
+        </div>
+        <button class="toggle-btn" onclick="toggleExamples('ex17', this)">Dir 5 Beispiele + Darija</button>
+      </div>
+      <div id="ex17" class="examples">
+        <h4>5 Beispiele mit Darija:</h4>
+        <ol>
+          <li>
+          <div class="de">Ich hoffe, dass alles gut klappt.</div>
+          <div class="darija">➜ كنتمنا كلشي يدوز مزيان.</div>
+        </li><li>
+          <div class="de">Der Plan hat am Ende doch geklappt.</div>
+          <div class="darija">➜ فالآخر الخطة نجحات.</div>
+        </li><li>
+          <div class="de">Heute hat es leider nicht geklappt.</div>
+          <div class="darija">➜ اليوم للأسف ما مشاتش.</div>
+        </li><li>
+          <div class="de">Wenn wir zusammenarbeiten, wird es klappen.</div>
+          <div class="darija">➜ إلى خدمنا مع بعضياتنا غادي تنجح.</div>
+        </li><li>
+          <div class="de">Mit Geduld klappt es besser.</div>
+          <div class="darija">➜ بالصبر كتمشي الأمور حسن.</div>
+        </li>
+        </ol>
+      </div>
+    </article>
+    
+    </section>
+
+    <div class="footer">
+      German verbs with 5 examples + Moroccan Darija translations
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Den Horizont erweitern - Komplett-Lektion</title>
+  <style>
+    :root {
+      --paper:#fffdf7;
+      --ink:#1e1e1e;
+      --blue:#0b3b77;
+      --green:#1f8a3d;
+      --pink:#e64980;
+      --purple:#845ec2;
+      --orange:#f39c12;
+      --line:#d9e6cf;
+      --shadow:0 18px 45px rgba(0,0,0,.12);
+    }
+
+    * { box-sizing:border-box; }
+
+    html, body {
+      margin:0;
+      min-height:100%;
+      font-family:"Comic Sans MS","Trebuchet MS",Arial,sans-serif;
+      background:linear-gradient(180deg,#f8f4ec 0%,#ede7da 100%);
+      color:var(--ink);
+    }
+
+    body {
+      padding:22px;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    .site {
+      max-width:1220px;
+      margin:auto;
+      background:var(--paper);
+      border:4px solid #fff;
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      min-height:calc(100vh - 44px);
+    }
+
+    .site-header {
+      text-align:center;
+      padding:28px 18px 26px;
+      border-bottom:3px dashed var(--line);
+    }
+
+    .icons {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-size:52px;
+      margin-bottom:10px;
+    }
+
+    h1 {
+      margin:0;
+      color:var(--blue);
+      font-size:clamp(38px,7vw,78px);
+      line-height:.95;
+    }
+
+    .unit {
+      margin:10px 0 0;
+      color:var(--green);
+      font-size:clamp(30px,5.5vw,58px);
+      line-height:1;
+      font-weight:900;
+    }
+
+    .subtitle {
+      margin:14px auto 0;
+      max-width:980px;
+      font-size:clamp(17px,2.4vw,26px);
+      font-weight:900;
+      line-height:1.35;
+    }
+
+    .note {
+      margin:10px auto 0;
+      max-width:900px;
+      font-family:Arial,Tahoma,sans-serif;
+      font-size:17px;
+      color:#555;
+      line-height:1.55;
+    }
+
+    .home {
+      padding:30px 18px 38px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+      max-width:1040px;
+      margin:auto;
+    }
+
+    .open-card, .text-btn {
+      border:0;
+      border-radius:24px;
+      padding:26px 18px;
+      min-height:205px;
+      cursor:pointer;
+      color:#fff;
+      font-family:inherit;
+      box-shadow:0 12px 24px rgba(0,0,0,.12);
+      transition:transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      text-align:center;
+    }
+
+    .open-card:hover, .text-btn:hover {
+      transform:translateY(-3px);
+      box-shadow:0 16px 30px rgba(0,0,0,.16);
+      filter:saturate(1.05);
+    }
+
+    .open-card:active, .text-btn:active { transform:scale(.99); }
+
+    .open-card.wortschatz { background:linear-gradient(135deg,#0b3b77,#1f8a3d); }
+    .open-card.verben { background:linear-gradient(135deg,#845ec2,#0d6efd); }
+    .open-card.robot { background:linear-gradient(135deg,#f39c12,#d35400); }
+    .open-card.texts { background:linear-gradient(135deg,#e64980,#845ec2); }
+
+    .open-card .icon, .text-btn .icon {
+      display:block;
+      font-size:52px;
+      margin-bottom:10px;
+    }
+
+    .open-card .title, .text-btn .title {
+      display:block;
+      font-size:clamp(23px,3vw,34px);
+      font-weight:900;
+      line-height:1.15;
+    }
+
+    .open-card .desc, .text-btn .desc {
+      display:block;
+      margin-top:12px;
+      font-family:Arial,Tahoma,sans-serif;
+      font-size:17px;
+      line-height:1.45;
+      opacity:.95;
+    }
+
+    .viewer {
+      display:none;
+      height:calc(100vh - 44px);
+      min-height:720px;
+      background:#fffdf7;
+    }
+
+    .viewer.active {
+      display:flex;
+      flex-direction:column;
+    }
+
+    .viewer-bar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:12px;
+      background:#fffdf7;
+      border-bottom:3px dashed var(--line);
+      position:sticky;
+      top:0;
+      z-index:10;
+    }
+
+    .viewer-title {
+      margin:0;
+      color:var(--blue);
+      font-size:clamp(18px,3vw,30px);
+      font-weight:900;
+      text-align:center;
+      flex:1;
+      line-height:1.2;
+    }
+
+    .back-btn, .mini-btn {
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      background:#0b3b77;
+      color:#fff;
+      font-family:inherit;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .mini-btn {
+      background:#1f8a3d;
+    }
+
+    .back-btn:hover { background:#082b57; }
+    .mini-btn:hover { background:#17672d; }
+
+    .viewer iframe {
+      flex:1;
+      width:100%;
+      border:0;
+      background:#fffdf7;
+    }
+
+    .text-menu {
+      flex:1;
+      padding:30px 18px 38px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:18px;
+      max-width:1060px;
+      width:100%;
+      margin:auto;
+      align-content:start;
+      background:#fffdf7;
+    }
+
+    .text-btn.one { background:linear-gradient(135deg,#0b63ce,#1f8a3d); }
+    .text-btn.two { background:linear-gradient(135deg,#845ec2,#e64980); }
+    .text-btn.three { background:linear-gradient(135deg,#f39c12,#0b3b77); }
+    .text-btn.four { background:linear-gradient(135deg,#20c997,#0d6efd); }
+    .text-btn.five { background:linear-gradient(135deg,#e64980,#f39c12); }
+
+    body.view-mode {
+      padding:0;
+      background:#fffdf7;
+    }
+
+    body.view-mode .site {
+      max-width:none;
+      min-height:100vh;
+      border:0;
+      border-radius:0;
+      box-shadow:none;
+    }
+
+    body.view-mode .site-header,
+    body.view-mode .home {
+      display:none;
+    }
+
+    @media (max-width:760px) {
+      body {
+        padding:0;
+        background:#fffdf7;
+      }
+
+      .site {
+        min-height:100vh;
+        border:0;
+        border-radius:0;
+        box-shadow:none;
+      }
+
+      .site-header { padding:16px 10px 18px; }
+
+      .icons { font-size:31px; }
+
+      .note { font-size:15px; }
+
+      .home, .text-menu {
+        grid-template-columns:1fr;
+        gap:14px;
+        padding:16px 10px 24px;
+      }
+
+      .open-card, .text-btn {
+        min-height:155px;
+        border-radius:20px;
+        padding:20px 14px;
+      }
+
+      .open-card .icon, .text-btn .icon { font-size:42px; }
+
+      .viewer {
+        height:100vh;
+        min-height:100vh;
+      }
+
+      .viewer-bar { padding:9px; }
+
+      .back-btn, .mini-btn {
+        padding:10px 12px;
+        font-size:14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="site">
+    <header class="site-header">
+      <div class="icons">
+        <span>🌍</span>
+        <span>🎧</span>
+        <span>🤖</span>
+      </div>
+      <h1>Den Horizont erweitern</h1>
+      <div class="unit">Komplett-Lektion</div>
+      <div class="subtitle">Wortschatz · Verben & Redemittel · Robot · Texte</div>
+      <div class="note">
+        كليكي على أي زر باش يفتح المحتوى كامل فصفحة بوحدو. النصوص مجموعين فزر <strong>Texte</strong>.
+      </div>
+    </header>
+
+    <section class="home" id="home">
+      <button class="open-card wortschatz" type="button" onclick="openPage('pages/wortschatz.html','📚 Wortschatz','home')">
+        <span class="icon">📚</span>
+        <span class="title">Wortschatz</span>
+        <span class="desc">الكلمات مع الأمثلة والترجمة بالدارجة.</span>
+      </button>
+
+      <button class="open-card verben" type="button" onclick="openPage('pages/verben_redemittel.html','🔤 Verben & Redemittel','home')">
+        <span class="icon">🔤</span>
+        <span class="title">Verben & Redemittel</span>
+        <span class="desc">الأفعال والتعابير مع 5 أمثلة لكل واحد.</span>
+      </button>
+
+      <button class="open-card robot" type="button" onclick="openPage('pages/robot.html','🤖 Robot','home')">
+        <span class="icon">🤖</span>
+        <span class="title">Robot</span>
+        <span class="desc">روبوت للتدريب على Verben و Redemittel.</span>
+      </button>
+
+      <button class="open-card texts" type="button" onclick="openTextMenu()">
+        <span class="icon">📖</span>
+        <span class="title">Texte</span>
+        <span class="desc">Text 1 حتى Text 5؛ كل نص كيتفتح بوحدو.</span>
+      </button>
+    </section>
+
+    <section class="viewer" id="textMenuViewer" aria-label="Texte menu">
+      <div class="viewer-bar">
+        <button class="back-btn" type="button" onclick="goHome()">⬅ رجوع</button>
+        <h2 class="viewer-title">📖 Texte</h2>
+        <span style="width:88px"></span>
+      </div>
+
+      <div class="text-menu">
+        <button class="text-btn one" type="button" onclick="openPage('pages/text1.html','🌍 Text 1 - Eine Reise, die meinen Horizont erweitert hat','texts')">
+          <span class="icon">🌍</span>
+          <span class="title">Text 1</span>
+          <span class="desc">Eine Reise, die meinen Horizont erweitert hat</span>
+        </button>
+
+        <button class="text-btn two" type="button" onclick="openPage('pages/text2.html','🌐 Text 2 - Leben in einer anderen Kultur','texts')">
+          <span class="icon">🌐</span>
+          <span class="title">Text 2</span>
+          <span class="desc">Leben in einer anderen Kultur</span>
+        </button>
+
+        <button class="text-btn three" type="button" onclick="openPage('pages/text3.html','👀 Text 3 - Der erste Eindruck täuscht','texts')">
+          <span class="icon">👀</span>
+          <span class="title">Text 3</span>
+          <span class="desc">Der erste Eindruck täuscht</span>
+        </button>
+
+        <button class="text-btn four" type="button" onclick="openPage('pages/text4.html','🧗 Text 4 - Mein extremes Hobby','texts')">
+          <span class="icon">🧗</span>
+          <span class="title">Text 4</span>
+          <span class="desc">Mein extremes Hobby</span>
+        </button>
+
+        <button class="text-btn five" type="button" onclick="openPage('pages/text5.html','✨ Text 5 - Eine Erfahrung anders als erwartet','texts')">
+          <span class="icon">✨</span>
+          <span class="title">Text 5</span>
+          <span class="desc">Eine Erfahrung anders als erwartet</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="viewer" id="pageViewer" aria-label="Content viewer">
+      <div class="viewer-bar">
+        <button class="back-btn" type="button" onclick="goBack()">⬅ رجوع</button>
+        <h2 class="viewer-title" id="pageTitle">Content</h2>
+        <button class="mini-btn" type="button" onclick="openCurrentNewTab()">↗ فتح</button>
+      </div>
+      <iframe id="contentFrame" title="Content" allow="autoplay"></iframe>
+    </section>
+  </main>
+
+  <script>
+    let currentGroup = "home";
+    let currentSrc = "";
+
+    function hideAllViews() {
+      document.getElementById("textMenuViewer").classList.remove("active");
+      document.getElementById("pageViewer").classList.remove("active");
+    }
+
+    function openTextMenu() {
+      document.body.classList.add("view-mode");
+      hideAllViews();
+      currentGroup = "texts";
+      document.getElementById("textMenuViewer").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function openPage(src, title, group) {
+      currentSrc = src;
+      currentGroup = group || "home";
+      document.getElementById("pageTitle").textContent = title;
+      document.getElementById("contentFrame").src = src;
+
+      document.body.classList.add("view-mode");
+      hideAllViews();
+      document.getElementById("pageViewer").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function openCurrentNewTab() {
+      if (currentSrc) window.open(currentSrc, "_blank");
+    }
+
+    function goBack() {
+      document.getElementById("contentFrame").removeAttribute("src");
+
+      if (currentGroup === "texts") {
+        openTextMenu();
+      } else {
+        goHome();
+      }
+    }
+
+    function goHome() {
+      document.body.classList.remove("view-mode");
+      hideAllViews();
+      document.getElementById("contentFrame").removeAttribute("src");
+      currentSrc = "";
+      currentGroup = "home";
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>
